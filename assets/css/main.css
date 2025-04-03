@@ -1,0 +1,8 @@
+:root {
+    --admin-color-primary: #00aaff;
+}
+
+button.br-ext {
+    background-color: var(--admin-color-primary);
+    color: black;
+}
