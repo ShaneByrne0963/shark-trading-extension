@@ -2,12 +2,19 @@ const actions = {
   setSale: (data) => {
     // Find the sale price input
     const saleInput = document.getElementById("_sale_price");
+    const titleInput = document.getElementById("title");
 
-    // Keep checking 
-    if (saleInput) {
-      saleInput.value = data.price;
-      return true;
+    // Try again if any required input is not found
+    if (!saleInput || !titleInput) {
+      return false;
     }
+    // Add the *SPECIAL OFFER* prefix to the title
+    if (!titleInput.value.includes("*SPECIAL OFFER*")) {
+      titleInput.value = `*SPECIAL OFFER* ${titleInput.value}`;
+    }
+    saleInput.value = data.price;
+    // Success
+    return true;
   }
 }
 
