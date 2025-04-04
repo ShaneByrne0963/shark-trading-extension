@@ -18,7 +18,8 @@ function performAction(data) {
     setTimeout(() => performAction(data), 1000);
   }
   else {
-    console.log("Action Complete!");
+    // Click the "publish" button when the action has been performed
+    document.getElementById("publish").click();
   }
 }
 
@@ -32,6 +33,11 @@ if (window.location.href.includes("/post.php") && window.location.href.includes(
   const extAPI = typeof browser !== "undefined" ? browser : chrome;
 
   extAPI.storage.local.get("sharkTradingData", (result) => {
-    performAction(result.sharkTradingData);
+    if ("sharkTradingData" in result) {
+      performAction(result.sharkTradingData);
+  
+      // Clear the data once received
+      extAPI.storage.local.set({ sharkTradingData: {} });
+    }
 });
 }
