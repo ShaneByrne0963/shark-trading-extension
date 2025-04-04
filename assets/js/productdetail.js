@@ -1,7 +1,13 @@
 // Takes the admin to the edit product page
-function editProduct() {
-    const productId = document.getElementById("product-id-for-enquiry").value;
-    window.location = `/wp-admin/post.php?post=${productId}&action=edit`;
+function editProduct(action, data) {
+    const extAPI = typeof browser !== "undefined" ? browser : chrome;
+
+    const exportData = { action, ...data };
+
+    extAPI.storage.local.set({ sharkTradingData: exportData }, () => {
+        const productId = document.getElementById("product-id-for-enquiry").value;
+        window.location = `/wp-admin/post.php?post=${productId}&action=edit`;
+    });
 }
 
 
@@ -74,7 +80,7 @@ function saleButtonInit() {
     if (isSale) {
         priceButton.innerText = "End Sale";
 
-        priceButton.onclick = editProduct;
+        priceButton.onclick = () => editProduct("removeSale");
     }
     else {
         const price = getPrice();
@@ -105,6 +111,7 @@ function saleButtonInit() {
         saleSubmit.className = "br-ext";
         saleSubmit.innerText = "Submit";
         saleSubmit.disabled = true;
+        saleSubmit.onclick = () => editProduct("setSale", { price: parseFloat(document.getElementById("br-ext-sale-input").value) });
         saleForm.appendChild(saleSubmit);
 
         // Create the cancel button
