@@ -1,8 +1,23 @@
 :root {
     --admin-color-primary: #00aaff;
+    --admin-color-highlight: #70ccfa;
+    --admin-color-pale: #dfdfdf;
+    --admin-color-pale-highlight: #f8f8f8;
 }
 
 button.br-ext {
     background-color: var(--admin-color-primary);
     color: black;
+
+    &:hover {
+        background-color: var(--admin-color-highlight);
+    }
+
+    &.cancel {
+        background-color: var(--admin-color-pale);
+
+        &:hover {
+            background-color: var(--admin-color-pale-highlight);
+        }
+    }
 }
