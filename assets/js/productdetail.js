@@ -5,12 +5,29 @@ function editProduct() {
 }
 
 
+// Finds the current price of the product
+function getPrice() {
+    return parseFloat(document.querySelector(".price bdi").innerText.replace("€", ""));
+}
+
+
+// Replaces the "Start Sale" button with the sale form
 function initSale() {
     let saleForm = document.getElementById("br-ext-sale-form");
     let saleButton = document.getElementById("br-ext-start-sale");
 
     saleButton.style.display = "none";
     saleForm.style.display = "flex";
+}
+
+
+// Returns the "Start Sale" button and hides the form
+function cancelSale() {
+    let saleForm = document.getElementById("br-ext-sale-form");
+    let saleButton = document.getElementById("br-ext-start-sale");
+
+    saleButton.style.display = "inline-block";
+    saleForm.style.display = "none";
 }
 
 
@@ -26,8 +43,11 @@ function saleButtonInit() {
 
     if (isSale) {
         priceButton.innerText = "End Sale";
+
+        priceButton.onclick = editProduct;
     }
     else {
+        const price = getPrice();
         priceButton.innerText = "Start Sale";
         priceButton.onclick = initSale;
 
@@ -42,6 +62,10 @@ function saleButtonInit() {
         let saleInput = document.createElement("input");
         saleInput.id = "br-ext-sale-input";
         saleInput.className = "br-ext";
+        saleInput.type = "number";
+        saleInput.min = "1";
+        saleInput.max = `${price - 1}`;
+        saleInput.placeholder = "Sale Price"
         saleForm.appendChild(saleInput);
 
         // Create the submit button
@@ -49,6 +73,7 @@ function saleButtonInit() {
         saleSubmit.id = "br-ext-sale-submit";
         saleSubmit.className = "br-ext";
         saleSubmit.innerText = "Submit";
+        saleSubmit.disabled = true;
         saleForm.appendChild(saleSubmit);
 
         // Create the cancel button
@@ -56,6 +81,7 @@ function saleButtonInit() {
         saleCancel.id = "br-ext-sale-cancel";
         saleCancel.className = "br-ext cancel";
         saleCancel.innerText = "Cancel";
+        saleCancel.onclick = cancelSale;
         saleForm.appendChild(saleCancel);
 
         priceEl.after(saleForm);

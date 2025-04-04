@@ -9,14 +9,14 @@ button.br-ext {
     background-color: var(--admin-color-primary);
     color: black;
 
-    &:hover {
+    &:not([disabled]):hover {
         background-color: var(--admin-color-highlight);
     }
 
     &.cancel {
         background-color: var(--admin-color-pale);
 
-        &:hover {
+        &:not([disabled]):hover {
             background-color: var(--admin-color-pale-highlight);
         }
     }
