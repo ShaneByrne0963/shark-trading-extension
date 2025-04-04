@@ -15,9 +15,37 @@ function getPrice() {
 function initSale() {
     let saleForm = document.getElementById("br-ext-sale-form");
     let saleButton = document.getElementById("br-ext-start-sale");
+    let saleFeedback = document.getElementById("br-ext-sale-feedback");
 
     saleButton.style.display = "none";
     saleForm.style.display = "flex";
+    saleFeedback.style.display = "block";
+}
+
+
+// Checks if the number entered by the user is valid
+function validateSale() {
+    let feedback = "";
+    const input = document.getElementById("br-ext-sale-input");
+    input.classList.remove("invalid");
+    const val = parseFloat(input.value);
+    const originalPrice = getPrice();
+
+    // A value must be entered to set a sale
+    if (isNaN(val)) {
+        feedback = "Please enter a value";
+    }
+    else if (val < 1) {
+        feedback = "New price must be at least €1";
+    }
+    else if (val >= originalPrice) {
+        feedback = "New price must be less than the original price";
+    }
+    document.querySelector("#br-ext-sale-submit").disabled = feedback !== "";
+    document.querySelector("#br-ext-sale-feedback").innerText = feedback;
+    if (feedback) {
+        input.classList.add("invalid");
+    }
 }
 
 
@@ -25,9 +53,11 @@ function initSale() {
 function cancelSale() {
     let saleForm = document.getElementById("br-ext-sale-form");
     let saleButton = document.getElementById("br-ext-start-sale");
+    let saleFeedback = document.getElementById("br-ext-sale-feedback");
 
     saleButton.style.display = "inline-block";
     saleForm.style.display = "none";
+    saleFeedback.style.display = "none";
 }
 
 
@@ -66,6 +96,7 @@ function saleButtonInit() {
         saleInput.min = "1";
         saleInput.max = `${price - 1}`;
         saleInput.placeholder = "Sale Price"
+        saleInput.oninput = validateSale;
         saleForm.appendChild(saleInput);
 
         // Create the submit button
@@ -84,6 +115,12 @@ function saleButtonInit() {
         saleCancel.onclick = cancelSale;
         saleForm.appendChild(saleCancel);
 
+        // Create the input feedback element
+        let saleFeedback = document.createElement("div");
+        saleFeedback.id = "br-ext-sale-feedback";
+        saleFeedback.className = "br-ext feedback";
+        
+        priceEl.after(saleFeedback);
         priceEl.after(saleForm);
     }
     priceEl.after(priceButton);

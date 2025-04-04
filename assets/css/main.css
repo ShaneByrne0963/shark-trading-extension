@@ -3,6 +3,7 @@
     --admin-color-highlight: #70ccfa;
     --admin-color-pale: #dfdfdf;
     --admin-color-pale-highlight: #f8f8f8;
+    --admin-color-error: #a80000;
 }
 
 button.br-ext {
@@ -20,4 +21,16 @@ button.br-ext {
             background-color: var(--admin-color-pale-highlight);
         }
     }
+}
+
+#br-ext-sale-form button {
+    padding: 1rem;
+}
+
+.br-ext.feedback {
+    color: var(--admin-color-error);
+}
+
+.br-ext.invalid {
+    border-color: var(--admin-color-error) !important;
 }
