@@ -17,15 +17,21 @@ function getPrice() {
 }
 
 
-// Replaces the "Start Sale" button with the sale form
-function initSale() {
-    let saleForm = document.getElementById("br-ext-sale-form");
+// Hides the price options, and shows a specific form
+function openForm(formType) {
     let buttonDiv = document.getElementById("br-ext-price-buttons");
-    let saleFeedback = document.getElementById("br-ext-sale-feedback");
+    let form = document.getElementById(`br-ext-${formType}-form`);
+    let feedback = document.getElementById(`br-ext-${formType}-feedback`);
 
     buttonDiv.style.display = "none";
-    saleForm.style.display = "flex";
-    saleFeedback.style.display = "block";
+    form.style.display = "flex";
+    feedback.style.display = "block";
+
+    // Hide the price when editing it
+    if (formType === "price") {
+        let priceEl = document.querySelector(".woocommerce-Price-amount.amount");
+        priceEl.style.display = "none";
+    }
 }
 
 
@@ -56,14 +62,20 @@ function validateSale() {
 
 
 // Returns the "Start Sale" button and hides the form
-function cancelSale() {
-    let saleForm = document.getElementById("br-ext-sale-form");
-    let buttonDiv = document.getElementById("br-ext-price-buttons");
-    let saleFeedback = document.getElementById("br-ext-sale-feedback");
+function cancelPriceEdit() {
+    // Hide all price forms
+    const forms = ["sale", "price"];
+    for (let f of forms) {
+        let form = document.getElementById(`br-ext-${f}-form`);
+        let feedback = document.getElementById(`br-ext-${f}-form`);
 
+        form.style.display = "none";
+        feedback.style.display = "none";
+    }
+    let buttonDiv = document.getElementById("br-ext-price-buttons");
     buttonDiv.style.display = "flex";
-    saleForm.style.display = "none";
-    saleFeedback.style.display = "none";
+    let priceEl = document.querySelector(".woocommerce-Price-amount.amount");
+    priceEl.style.display = "inline";
 }
 
 
@@ -74,8 +86,51 @@ function editPriceButtonInit() {
     priceButton.id = `br-ext-edit-price`;
     priceButton.className = `br-ext`;
     priceButton.innerText = "Edit Price";
+    priceButton.onclick = () => openForm("price");
 
     buttonDiv.appendChild(priceButton);
+
+    // Create the price form
+    let priceForm = document.createElement("div");
+    priceForm.id = "br-ext-price-form";
+    priceForm.className = "br-ext br-ext-form";
+    priceForm.style.display = "none";
+
+    // Create the sale input
+    let priceInput = document.createElement("input");
+    priceInput.id = "br-ext-price-input";
+    priceInput.className = "br-ext";
+    priceInput.type = "number";
+    priceInput.min = "1";
+    priceInput.value = getPrice();
+    priceInput.oninput = validateSale;
+    priceForm.appendChild(priceInput);
+
+    // Create the submit button
+    let priceSubmit = document.createElement("button");
+    priceSubmit.id = "br-ext-sale-submit";
+    priceSubmit.className = "br-ext";
+    priceSubmit.innerText = "Submit";
+    priceSubmit.disabled = true;
+    priceSubmit.onclick = () => editProduct("setSale", { price: parseFloat(document.getElementById("br-ext-sale-input").value) });
+    priceForm.appendChild(priceSubmit);
+
+    // Create the cancel button
+    let priceCancel = document.createElement("button");
+    priceCancel.id = "br-ext-price-cancel";
+    priceCancel.className = "br-ext cancel";
+    priceCancel.innerText = "Cancel";
+    priceCancel.onclick = cancelPriceEdit;
+    priceForm.appendChild(priceCancel);
+
+    // Create the input feedback element
+    let priceFeedback = document.createElement("div");
+    priceFeedback.id = "br-ext-price-feedback";
+    priceFeedback.className = "br-ext feedback";
+
+    const priceEl = document.querySelector(".price");
+    priceEl.appendChild(priceForm);
+    priceEl.appendChild(priceFeedback);
 }
 
 
@@ -101,13 +156,13 @@ function saleButtonInit() {
     else {
         const price = getPrice();
         priceButton.innerText = "Start Sale";
-        priceButton.onclick = initSale;
+        priceButton.onclick = () => openForm("sale");
 
         // Create the sale form so the admin can set the sale price on the product detail page
         // We don't use a form element because we are not posting data in a normal way
         let saleForm = document.createElement("div");
         saleForm.id = "br-ext-sale-form";
-        saleForm.className = "br-ext";
+        saleForm.className = "br-ext br-ext-form";
         saleForm.style.display = "none";
 
         // Create the sale input
@@ -135,7 +190,7 @@ function saleButtonInit() {
         saleCancel.id = "br-ext-sale-cancel";
         saleCancel.className = "br-ext cancel";
         saleCancel.innerText = "Cancel";
-        saleCancel.onclick = cancelSale;
+        saleCancel.onclick = cancelPriceEdit;
         saleForm.appendChild(saleCancel);
 
         // Create the input feedback element
