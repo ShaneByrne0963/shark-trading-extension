@@ -20,10 +20,10 @@ function getPrice() {
 // Replaces the "Start Sale" button with the sale form
 function initSale() {
     let saleForm = document.getElementById("br-ext-sale-form");
-    let saleButton = document.getElementById("br-ext-start-sale");
+    let buttonDiv = document.getElementById("br-ext-price-buttons");
     let saleFeedback = document.getElementById("br-ext-sale-feedback");
 
-    saleButton.style.display = "none";
+    buttonDiv.style.display = "none";
     saleForm.style.display = "flex";
     saleFeedback.style.display = "block";
 }
@@ -58,12 +58,24 @@ function validateSale() {
 // Returns the "Start Sale" button and hides the form
 function cancelSale() {
     let saleForm = document.getElementById("br-ext-sale-form");
-    let saleButton = document.getElementById("br-ext-start-sale");
+    let buttonDiv = document.getElementById("br-ext-price-buttons");
     let saleFeedback = document.getElementById("br-ext-sale-feedback");
 
-    saleButton.style.display = "inline-block";
+    buttonDiv.style.display = "flex";
     saleForm.style.display = "none";
     saleFeedback.style.display = "none";
+}
+
+
+function editPriceButtonInit() {
+    const buttonDiv = document.getElementById("br-ext-price-buttons");
+
+    let priceButton = document.createElement("button");
+    priceButton.id = `br-ext-edit-price`;
+    priceButton.className = `br-ext`;
+    priceButton.innerText = "Edit Price";
+
+    buttonDiv.appendChild(priceButton);
 }
 
 
@@ -72,6 +84,10 @@ function saleButtonInit() {
     const priceEl = document.querySelector("p.price");
     priceEl.style.marginBottom = "0";
     const isSale = priceEl.querySelectorAll(".woocommerce-Price-amount").length > 1;
+
+    let buttonDiv = document.createElement("div");
+    buttonDiv.id = "br-ext-price-buttons";
+    priceEl.after(buttonDiv);
 
     let priceButton = document.createElement("button");
     priceButton.id = `br-ext-start-sale`;
@@ -130,8 +146,14 @@ function saleButtonInit() {
         priceEl.after(saleFeedback);
         priceEl.after(saleForm);
     }
-    priceEl.after(priceButton);
+    buttonDiv.appendChild(priceButton);
+
+    // Add the "Edit Price" button for items not on sale
+    if (!isSale) {
+        editPriceButtonInit();
+    }
 }
+
 
 if (window.location.href.includes("/product/")) {
     saleButtonInit();

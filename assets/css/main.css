@@ -35,6 +35,11 @@
     }
 }
 
+#br-ext-price-buttons {
+    display: flex;
+    gap: 0.5em;
+}
+
 button.br-ext {
     background-color: var(--admin-color-primary);
     color: black;
