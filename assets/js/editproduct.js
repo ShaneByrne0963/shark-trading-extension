@@ -49,6 +49,17 @@ function performAction(data) {
 }
 
 
+// Create an overlay that prevents the user from clicking anything while changes are being applied
+function createOverlay(heading, subheading) {
+  let overlay = document.createElement("div");
+  overlay.id = "br-ext-overlay";
+  overlay.innerHTML = `
+  <div id="br-ext-overlay-text"><p>${heading}</p><span>${subheading}</span></div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+
 function returnToProduct() {
   window.location = document.querySelector("#sample-permalink>a").href;
 }
@@ -60,18 +71,20 @@ if (window.location.href.includes("/post.php") && window.location.href.includes(
   extAPI.storage.local.get("sharkTradingData", (result) => {
     if ("sharkTradingData" in result) {
       if ("action" in result.sharkTradingData) {
-        // Create an overlay that prevents the user from clicking anything
-        let overlay = document.createElement("div");
-        overlay.id = "br-ext-overlay";
-        overlay.innerHTML = `
-        <div id="br-ext-overlay-text"><p>Applying changes</p><span>Please wait...</span></div>
-        `;
-        document.body.appendChild(overlay);
-  
+        createOverlay("Applying changes", "Please wait...");
         performAction(result.sharkTradingData);
     
+        // Add a completed field to the data to signal a return to the product
+        extAPI.storage.local.set({ sharkTradingData: { completed: true } });
+      }
+      else if ("completed" in result.sharkTradingData) {
+        createOverlay("Changes applied", "Returning to product...");
+
         // Clear the data once received
         extAPI.storage.local.set({ sharkTradingData: {} });
+
+        // Go back to the product details page
+        returnToProduct();
       }
     }
 });
