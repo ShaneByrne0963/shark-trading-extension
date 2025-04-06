@@ -80,7 +80,7 @@ function saleButtonInit() {
     if (isSale) {
         priceButton.innerText = "End Sale";
 
-        priceButton.onclick = () => editProduct("removeSale");
+        priceButton.onclick = () => editProduct("removeSale", {});
     }
     else {
         const price = getPrice();
