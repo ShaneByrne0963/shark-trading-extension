@@ -59,10 +59,20 @@ if (window.location.href.includes("/post.php") && window.location.href.includes(
 
   extAPI.storage.local.get("sharkTradingData", (result) => {
     if ("sharkTradingData" in result) {
-      performAction(result.sharkTradingData);
+      if ("action" in result.sharkTradingData) {
+        // Create an overlay that prevents the user from clicking anything
+        let overlay = document.createElement("div");
+        overlay.id = "br-ext-overlay";
+        overlay.innerHTML = `
+        <div id="br-ext-overlay-text"><p>Applying changes</p><span>Please wait...</span></div>
+        `;
+        document.body.appendChild(overlay);
   
-      // Clear the data once received
-      extAPI.storage.local.set({ sharkTradingData: {} });
+        performAction(result.sharkTradingData);
+    
+        // Clear the data once received
+        extAPI.storage.local.set({ sharkTradingData: {} });
+      }
     }
 });
 }
