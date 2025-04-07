@@ -232,6 +232,30 @@ function saleButtonInit() {
 }
 
 
+function optionsInit() {
+    // Replace the Enquiry button with the product options
+    let optionsDiv = document.querySelector(".woocommerce-catalog-enquiry-btn");
+    optionsDiv.innerHTML = "";
+    
+    let option = document.createElement("div");
+    option.id = "br-ext-product-options";
+
+    let editButton = document.createElement("a");
+    editButton.innerText = "Edit Product";
+    const productId = document.getElementById("product-id-for-enquiry").value;
+    editButton.href = `/wp-admin/post.php?post=${productId}&action=edit`;
+    option.appendChild(editButton);
+
+    let deleteButton = document.createElement("a");
+    deleteButton.role = "button";
+    deleteButton.innerText = "Delete Product";
+    option.appendChild(deleteButton);
+
+    optionsDiv.appendChild(option);
+}
+
+
 if (window.location.href.includes("/product/")) {
     saleButtonInit();
+    optionsInit();
 }
