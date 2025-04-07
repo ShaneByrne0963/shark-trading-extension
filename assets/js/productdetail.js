@@ -89,7 +89,7 @@ function cancelPriceEdit() {
     const forms = ["sale", "price"];
     for (let f of forms) {
         let form = document.getElementById(`br-ext-${f}-form`);
-        let feedback = document.getElementById(`br-ext-${f}-form`);
+        let feedback = document.getElementById(`br-ext-${f}-feedback`);
 
         form.style.display = "none";
         feedback.style.display = "none";
@@ -113,46 +113,18 @@ function editPriceButtonInit() {
     buttonDiv.appendChild(priceButton);
 
     // Create the price form
-    let priceForm = document.createElement("div");
-    priceForm.id = "br-ext-price-form";
-    priceForm.className = "br-ext br-ext-form";
-    priceForm.style.display = "none";
-
-    // Create the sale input
-    let priceInput = document.createElement("input");
-    priceInput.id = "br-ext-price-input";
-    priceInput.className = "br-ext";
-    priceInput.type = "number";
-    priceInput.min = "1";
-    priceInput.value = getPrice();
-    priceInput.oninput = validatePrice;
-    priceForm.appendChild(priceInput);
-
-    // Create the submit button
-    let priceSubmit = document.createElement("button");
-    priceSubmit.id = "br-ext-price-submit";
-    priceSubmit.className = "br-ext";
-    priceSubmit.innerText = "Submit";
-    priceSubmit.disabled = true;
-    priceSubmit.onclick = () => editProduct("updatePrice", { price: parseFloat(document.getElementById("br-ext-price-input").value) });
-    priceForm.appendChild(priceSubmit);
-
-    // Create the cancel button
-    let priceCancel = document.createElement("button");
-    priceCancel.id = "br-ext-price-cancel";
-    priceCancel.className = "br-ext cancel";
-    priceCancel.innerText = "Cancel";
-    priceCancel.onclick = cancelPriceEdit;
-    priceForm.appendChild(priceCancel);
-
-    // Create the input feedback element
-    let priceFeedback = document.createElement("div");
-    priceFeedback.id = "br-ext-price-feedback";
-    priceFeedback.className = "br-ext feedback";
+    let { form, input, submit, cancel, feedback } = createInlineForm("price");
+    input.type = "number";
+    input.min = "1";
+    input.value = getPrice();
+    input.oninput = validatePrice;
+    
+    submit.onclick = () => editProduct("updatePrice", { price: parseFloat(document.getElementById("br-ext-price-input").value) });
+    cancel.onclick = cancelPriceEdit;
 
     const priceEl = document.querySelector(".price");
-    priceEl.appendChild(priceForm);
-    priceEl.appendChild(priceFeedback);
+    priceEl.appendChild(form);
+    priceEl.appendChild(feedback);
 }
 
 
@@ -180,48 +152,18 @@ function saleButtonInit() {
         priceButton.innerText = "Start Sale";
         priceButton.onclick = () => openForm("sale");
 
-        // Create the sale form so the admin can set the sale price on the product detail page
-        // We don't use a form element because we are not posting data in a normal way
-        let saleForm = document.createElement("div");
-        saleForm.id = "br-ext-sale-form";
-        saleForm.className = "br-ext br-ext-form";
-        saleForm.style.display = "none";
+        let { form, input, submit, cancel, feedback } = createInlineForm("sale");
+        input.type = "number";
+        input.min = "1";
+        input.max = `${price - 1}`;
+        input.placeholder = "Sale Price";
+        input.oninput = validateSale;
 
-        // Create the sale input
-        let saleInput = document.createElement("input");
-        saleInput.id = "br-ext-sale-input";
-        saleInput.className = "br-ext";
-        saleInput.type = "number";
-        saleInput.min = "1";
-        saleInput.max = `${price - 1}`;
-        saleInput.placeholder = "Sale Price"
-        saleInput.oninput = validateSale;
-        saleForm.appendChild(saleInput);
-
-        // Create the submit button
-        let saleSubmit = document.createElement("button");
-        saleSubmit.id = "br-ext-sale-submit";
-        saleSubmit.className = "br-ext";
-        saleSubmit.innerText = "Submit";
-        saleSubmit.disabled = true;
-        saleSubmit.onclick = () => editProduct("setSale", { price: parseFloat(document.getElementById("br-ext-sale-input").value) });
-        saleForm.appendChild(saleSubmit);
-
-        // Create the cancel button
-        let saleCancel = document.createElement("button");
-        saleCancel.id = "br-ext-sale-cancel";
-        saleCancel.className = "br-ext cancel";
-        saleCancel.innerText = "Cancel";
-        saleCancel.onclick = cancelPriceEdit;
-        saleForm.appendChild(saleCancel);
-
-        // Create the input feedback element
-        let saleFeedback = document.createElement("div");
-        saleFeedback.id = "br-ext-sale-feedback";
-        saleFeedback.className = "br-ext feedback";
+        submit.onclick = () => editProduct("setSale", { price: parseFloat(document.getElementById("br-ext-sale-input").value) });
+        cancel.onclick = cancelPriceEdit;
         
-        priceEl.after(saleFeedback);
-        priceEl.after(saleForm);
+        priceEl.after(feedback);
+        priceEl.after(form);
     }
     buttonDiv.appendChild(priceButton);
 
@@ -229,6 +171,44 @@ function saleButtonInit() {
     if (!isSale) {
         editPriceButtonInit();
     }
+}
+
+
+// Creates an inline form element with an input, a submit and a cancel button
+function createInlineForm(formType) {
+    // We don't use a form element because we are not posting data in a normal way
+    let form = document.createElement("div");
+    form.id = `br-ext-${formType}-form`;
+    form.className = "br-ext br-ext-form";
+    form.style.display = "none";
+
+    // Create the sale input
+    let input = document.createElement("input");
+    input.id = `br-ext-${formType}-input`;
+    input.className = "br-ext";
+    form.appendChild(input);
+
+    // Create the submit button
+    let submit = document.createElement("button");
+    submit.id = `br-ext-${formType}-submit`;
+    submit.className = "br-ext";
+    submit.innerText = "Submit";
+    submit.disabled = true;
+    form.appendChild(submit);
+
+    // Create the cancel button
+    let cancel = document.createElement("button");
+    cancel.id = `br-ext-${formType}-cancel`;
+    cancel.className = "br-ext cancel";
+    cancel.innerText = "Cancel";
+    form.appendChild(cancel);
+
+    // Create the input feedback element
+    let feedback = document.createElement("div");
+    feedback.id = `br-ext-${formType}-feedback`;
+    feedback.className = "br-ext feedback";
+
+    return { form, input, submit, cancel, feedback };
 }
 
 
