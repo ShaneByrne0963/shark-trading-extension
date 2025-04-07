@@ -4,6 +4,7 @@
     --admin-color-pale: #dfdfdf;
     --admin-color-pale-highlight: #f8f8f8;
     --admin-color-error: #a80000;
+    --admin-color-error-highlight: #cc0000;
 }
 
 #br-ext-overlay {
@@ -38,6 +39,19 @@
 #br-ext-price-buttons {
     display: flex;
     gap: 0.5em;
+}
+
+#br-ext-product-options {
+    display: flex;
+    gap: 1em;
+
+    #br-ext-product-delete {
+        color: var(--admin-color-error);
+
+        &:not([disabled]):hover {
+            color: var(--admin-color-error-highlight);
+        }
+    }
 }
 
 button.br-ext {

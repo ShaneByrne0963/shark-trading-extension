@@ -144,7 +144,6 @@ function saleButtonInit() {
 
     if (isSale) {
         priceButton.innerText = "End Sale";
-
         priceButton.onclick = () => editProduct("removeSale", {});
     }
     else {
@@ -215,7 +214,6 @@ function createInlineForm(formType) {
 function optionsInit() {
     // Replace the Enquiry button with the product options
     let optionsDiv = document.querySelector(".woocommerce-catalog-enquiry-btn");
-    optionsDiv.innerHTML = "";
     
     let option = document.createElement("div");
     option.id = "br-ext-product-options";
@@ -228,10 +226,12 @@ function optionsInit() {
 
     let deleteButton = document.createElement("a");
     deleteButton.role = "button";
+    deleteButton.id = "br-ext-product-delete";
     deleteButton.innerText = "Delete Product";
     option.appendChild(deleteButton);
 
-    optionsDiv.appendChild(option);
+    optionsDiv.after(option);
+    optionsDiv.remove();
 }
 
 
