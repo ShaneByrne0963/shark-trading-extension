@@ -61,6 +61,28 @@ function validateSale() {
 }
 
 
+// Checks if the number entered by the user is valid
+function validatePrice() {
+    let feedback = "";
+    const input = document.getElementById("br-ext-price-input");
+    input.classList.remove("invalid");
+    const val = parseFloat(input.value);
+
+    // A value must be entered to set a sale
+    if (isNaN(val)) {
+        feedback = "Please enter a value";
+    }
+    else if (val < 1) {
+        feedback = "New price must be at least €1";
+    }
+    document.querySelector("#br-ext-price-submit").disabled = feedback !== "";
+    document.querySelector("#br-ext-price-feedback").innerText = feedback;
+    if (feedback) {
+        input.classList.add("invalid");
+    }
+}
+
+
 // Returns the "Start Sale" button and hides the form
 function cancelPriceEdit() {
     // Hide all price forms
@@ -103,16 +125,16 @@ function editPriceButtonInit() {
     priceInput.type = "number";
     priceInput.min = "1";
     priceInput.value = getPrice();
-    priceInput.oninput = validateSale;
+    priceInput.oninput = validatePrice;
     priceForm.appendChild(priceInput);
 
     // Create the submit button
     let priceSubmit = document.createElement("button");
-    priceSubmit.id = "br-ext-sale-submit";
+    priceSubmit.id = "br-ext-price-submit";
     priceSubmit.className = "br-ext";
     priceSubmit.innerText = "Submit";
     priceSubmit.disabled = true;
-    priceSubmit.onclick = () => editProduct("setSale", { price: parseFloat(document.getElementById("br-ext-sale-input").value) });
+    priceSubmit.onclick = () => editProduct("updatePrice", { price: parseFloat(document.getElementById("br-ext-price-input").value) });
     priceForm.appendChild(priceSubmit);
 
     // Create the cancel button

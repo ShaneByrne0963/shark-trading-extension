@@ -33,6 +33,14 @@ const actions = {
     saleInput.value = "";
     // Success
     return true;
+  },
+  updatePrice: (data) => {
+    const priceInput = document.getElementById("_regular_price");
+
+    if (priceInput) {
+      priceInput.value = data.price;
+      return true;
+    }
   }
 }
 
