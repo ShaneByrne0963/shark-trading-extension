@@ -5,47 +5,47 @@ function iterateProducts() {
     iteration: true,
     page: 1,
     index: 0,
-    skus: {
-      OD: 0,
-      BD: 0,
-      SS: 0,
-      FT: 0,
-      PD: 0,
-      AC: 0,
+  }
+  let skuData = {
+    OD: 0,
+    BD: 0,
+    SS: 0,
+    FT: 0,
+    PD: 0,
+    AC: 0,
 
-      EC: 0,
-      CC: 0,
-      MC: 0,
-      ST: 0,
-      DC: 0,
-      SF: 0,
+    EC: 0,
+    CC: 0,
+    MC: 0,
+    ST: 0,
+    DC: 0,
+    SF: 0,
 
-      TS: 0,
-      FC: 0,
-      LK: 0,
+    TS: 0,
+    FC: 0,
+    LK: 0,
 
-      CN: 0,
-      MT: 0,
-      CF: 0,
+    CN: 0,
+    MT: 0,
+    CF: 0,
 
-      RC: 0,
-      SO: 0,
-      CT: 0,
-      CS: 0,
+    RC: 0,
+    SO: 0,
+    CT: 0,
+    CS: 0,
 
-      FS: 0,
-      MB: 0,
-      TT: 0,
-      WM: 0,
-      SU: 0,
+    FS: 0,
+    MB: 0,
+    TT: 0,
+    WM: 0,
+    SU: 0,
 
-      KC: 0,
-      KT: 0,
-      OF: 0,
-    }
+    KC: 0,
+    KT: 0,
+    OF: 0,
   }
 
-  extAPI.storage.local.set({ sharkTradingData: iterationData }, () => {
+  extAPI.storage.local.set({ sharkTradingData: iterationData, sharkTradingSkuData: skuData }, () => {
     iterationStep();
   });
 }
