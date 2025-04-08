@@ -35,50 +35,25 @@ function openForm(formType) {
 }
 
 
-// Checks if the number entered by the user is valid
-function validateSale() {
+function validate(form, options={}) {
     let feedback = "";
-    const input = document.getElementById("br-ext-sale-input");
-    input.classList.remove("invalid");
-    const val = parseFloat(input.value);
-    const originalPrice = getPrice();
+    form.input.classList.remove("invalid");
+    const isNumber = ("min" in options || "max" in options);
+    const val = isNumber ? parseFloat(form.input.value) : form.input.value;
 
-    // A value must be entered to set a sale
-    if (isNaN(val)) {
+    if (!("required" in options && !options.required) && (val === "" || (isNumber && isNaN(val)))) {
         feedback = "Please enter a value";
     }
-    else if (val < 1) {
-        feedback = "New price must be at least €1";
+    else if ("min" in options && val < options.min) {
+        feedback = "Value must be at least " + options.min;
     }
-    else if (val >= originalPrice) {
-        feedback = "New price must be less than the original price";
+    else if ("max" in options && val > options.max) {
+        feedback = "Value must be no more than " + options.max;
     }
-    document.querySelector("#br-ext-sale-submit").disabled = feedback !== "";
-    document.querySelector("#br-ext-sale-feedback").innerText = feedback;
+    form.submit.disabled = feedback !== "";
+    form.feedback.innerText = feedback;
     if (feedback) {
-        input.classList.add("invalid");
-    }
-}
-
-
-// Checks if the number entered by the user is valid
-function validatePrice() {
-    let feedback = "";
-    const input = document.getElementById("br-ext-price-input");
-    input.classList.remove("invalid");
-    const val = parseFloat(input.value);
-
-    // A value must be entered to set a sale
-    if (isNaN(val)) {
-        feedback = "Please enter a value";
-    }
-    else if (val < 1) {
-        feedback = "New price must be at least €1";
-    }
-    document.querySelector("#br-ext-price-submit").disabled = feedback !== "";
-    document.querySelector("#br-ext-price-feedback").innerText = feedback;
-    if (feedback) {
-        input.classList.add("invalid");
+        form.input.classList.add("invalid");
     }
 }
 
@@ -117,7 +92,10 @@ function editPriceButtonInit() {
     input.type = "number";
     input.min = "1";
     input.value = getPrice();
-    input.oninput = validatePrice;
+    input.oninput = () => validate(
+        {form, input, submit, feedback },
+        { min: 1 }
+    );
     
     submit.onclick = () => editProduct("updatePrice", { price: parseFloat(document.getElementById("br-ext-price-input").value) });
     cancel.onclick = cancelPriceEdit;
@@ -156,7 +134,10 @@ function saleButtonInit() {
         input.min = "1";
         input.max = `${price - 1}`;
         input.placeholder = "Sale Price";
-        input.oninput = validateSale;
+        input.oninput = () => validate(
+            { form, input, submit, feedback },
+            { min: 1, max: price - 1 }
+        );
 
         submit.onclick = () => editProduct("setSale", { price: parseFloat(document.getElementById("br-ext-sale-input").value) });
         cancel.onclick = cancelPriceEdit;
