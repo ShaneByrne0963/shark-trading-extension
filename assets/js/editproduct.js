@@ -41,6 +41,14 @@ const actions = {
       priceInput.value = data.price;
       return true;
     }
+  },
+  deleteProduct: () => {
+    const deleteButton = document.querySelector("#delete-action>a");
+
+    if (deleteButton) {
+      deleteButton.click();
+      return true;
+    }
   }
 }
 

@@ -211,8 +211,8 @@ function optionsInit() {
     deleteButton.innerText = "Delete Product";
     const deleteModalOptions = {
         header: "Delete Product",
-        body: "Are you sure you want to delete this product?"
-        
+        body: "Are you sure you want to delete this product?",
+        action: () => editProduct("deleteProduct", {})
     };
     deleteButton.onclick = () => showModal(deleteModalOptions);
     option.appendChild(deleteButton);

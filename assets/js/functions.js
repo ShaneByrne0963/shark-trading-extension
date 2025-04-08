@@ -26,7 +26,7 @@ function showModal(options) {
             ${options.body || ""}
         </div>
         <div id="br-ext-modal-footer">
-            <button class="br-ext">${options.submit || "Confirm"}</button>
+            <button class="br-ext submit">${options.submit || "Confirm"}</button>
             <button class="br-ext cancel">${options.cancel || "Cancel"}</button>
         </div>
     `;
@@ -34,6 +34,7 @@ function showModal(options) {
     document.body.appendChild(overlay);
 
     // Add the event listeners
+    modal.querySelector(".submit").onclick = options.action;
     modal.querySelector(".close").onclick = closeModal;
     modal.querySelector(".cancel").onclick = closeModal;
     overlay.onclick = (e) => {
@@ -41,4 +42,5 @@ function showModal(options) {
             closeModal();
         }
     }
+
 }
