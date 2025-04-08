@@ -64,6 +64,21 @@ function performAction(data) {
   }
 }
 
+function updateSku(data) {
+  const skuInput = document.getElementById("_sku");
+  if (skuInput) {
+    let newData = { ...data, continueIteration: true };
+    const extAPI = typeof browser !== "undefined" ? browser : chrome;
+    
+    extAPI.storage.local.set({ sharkTradingData: newData }, () => {
+      document.getElementById("publish").click();
+    });
+  }
+  else {
+    setTimeout(updateSku, 1000);
+  }
+}
+
 
 // Create an overlay that prevents the user from clicking anything while changes are being applied
 function createOverlay(heading, subheading) {
@@ -101,6 +116,17 @@ if (window.location.href.includes("/post.php") && window.location.href.includes(
 
         // Go back to the product details page
         returnToProduct();
+      }
+      else if ("continueIteration" in result.sharkTradingData) {
+        let newData = { ...result.sharkTradingData };
+        delete newData.continueIteration;
+
+        extAPI.storage.local.set({ sharkTradingData: newData }, () => {
+          window.location = `https://sharktrading.ie/wp-admin/edit.php?post_type=product&paged=${newData.page}`;
+        });
+      }
+      else if ("iteration" in result.sharkTradingData) {
+        updateSku(result.sharkTradingData);
       }
     }
 });

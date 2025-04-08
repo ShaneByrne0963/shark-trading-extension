@@ -13,7 +13,7 @@
     ],
     "content_scripts": [{
       "matches": ["http://sharktrading.ie/*", "https://sharktrading.ie/*"],
-      "js": ["assets/js/functions.js", "assets/js/editproduct.js", "assets/js/productdetail.js"],
+      "js": ["assets/js/functions.js", "assets/js/editproduct.js", "assets/js/productlist.js", "assets/js/productdetail.js"],
       "css": ["assets/css/main.css"]
     }]
   }
