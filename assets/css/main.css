@@ -34,6 +34,34 @@
             font-size: 1.5rem;
         }
     }
+
+    #br-ext-modal {
+        min-width: 40%;
+        min-height: 40%;
+        background-color: #eeeeee;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        color: black;
+
+        div {
+            padding: 0.5em 1em;
+        }
+
+        #br-ext-modal-header {
+            background-color: #cccccc;
+            display: flex;
+            flex-direction: row-reverse;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        #br-ext-modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            gap: 1em;
+        }
+    }
 }
 
 #br-ext-price-buttons {
@@ -46,6 +74,7 @@
     gap: 1em;
 
     #br-ext-product-delete {
+        cursor: pointer;
         color: var(--admin-color-error);
 
         &:not([disabled]):hover {

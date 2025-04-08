@@ -209,6 +209,12 @@ function optionsInit() {
     deleteButton.role = "button";
     deleteButton.id = "br-ext-product-delete";
     deleteButton.innerText = "Delete Product";
+    const deleteModalOptions = {
+        header: "Delete Product",
+        body: "Are you sure you want to delete this product?"
+        
+    };
+    deleteButton.onclick = () => showModal(deleteModalOptions);
     option.appendChild(deleteButton);
 
     optionsDiv.after(option);
