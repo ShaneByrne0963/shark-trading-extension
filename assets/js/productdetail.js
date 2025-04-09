@@ -13,7 +13,11 @@ function editProduct(action, data) {
 
 // Finds the current price of the product
 function getPrice() {
-    return parseFloat(document.querySelector(".price bdi").innerText.replace("€", ""));
+    let priceEl = document.querySelector(".price bdi");
+    if (priceEl) {
+        return parseFloat(priceEl.innerText.replace("€", ""));
+    }
+    return null;
 }
 
 
@@ -91,10 +95,10 @@ function editPriceButtonInit() {
     let { form, input, submit, cancel, feedback } = createInlineForm("price");
     input.type = "number";
     input.min = "1";
-    input.value = getPrice();
+    input.value = getPrice() || "";
     input.oninput = () => validate(
         {form, input, submit, feedback },
-        { min: 1 }
+        { min: 1, required: false }
     );
     
     submit.onclick = () => editProduct("updatePrice", { price: parseFloat(document.getElementById("br-ext-price-input").value) });
@@ -223,6 +227,12 @@ function optionsInit() {
 
 
 if (window.location.href.includes("/product/")) {
-    saleButtonInit();
+    // You can only start a sale if an original price exists
+    if (getPrice() !== null) {
+        saleButtonInit();
+    }
+    else {
+        editPriceButtonInit();
+    }
     optionsInit();
 }
