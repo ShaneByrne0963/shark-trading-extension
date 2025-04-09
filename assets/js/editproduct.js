@@ -53,6 +53,12 @@ const actions = {
 }
 
 
+// Extracts the product id from the URL
+function getProductId() {
+  return parseInt(window.location.href.split("?post=")[1].split("&action=")[0]);
+}
+
+
 function performAction(data) {
   // Keep checking for the action to be completed until it is
   if (!actions[data.action](data)) {
@@ -134,12 +140,8 @@ function iterate() {
   
         extAPI.storage.local.get("sharkTradingData", (result) => {
           let newData = { ...result.sharkTradingData, continueIteration: true };
-          console.log(newData);
-          let skuNumber = "" + newData[skuKey];
-          while (skuNumber.length < 4) {
-            skuNumber = "0" + skuNumber;
-          }
-          skuInput.value = `${skuKey}-${skuNumber}`;
+          let productId = getProductId();
+          skuInput.value = `${skuKey}-${productId}`;
           newData[skuKey]++;
           extAPI.storage.local.set({ sharkTradingData: newData }, () => {
             resolve(true);
