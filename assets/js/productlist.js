@@ -45,7 +45,7 @@ function iterateProducts() {
     OF: 0,
   }
 
-  extAPI.storage.local.set({ sharkTradingData: iterationData, sharkTradingSkuData: skuData }, () => {
+  extAPI.storage.local.set({ sharkTradingData: { ...iterationData, ...skuData } }, () => {
     iterationStep();
   });
 }

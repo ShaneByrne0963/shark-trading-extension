@@ -65,83 +65,90 @@ function performAction(data) {
 }
 
 
-function performIteration() {
-  if (iterate()) {
-      document.getElementById("publish").click();
-  }
-  else {
-    setTimeout(() => iterate(), 1000);
-  }
+async function performIteration() {
+  await iterate();
+  setTimeout(() => {
+    const skuInput = document.getElementById("_sku");
+    if (!skuInput || !skuInput.value) {
+      console.log("Failed");
+      performIteration();
+    }
+  }, 1000);
 }
 
 
 function iterate() {
-  const skuIds = {
-    OD: 61,
-    BD: 60,
-    SS: 62,
-    FT: 90,
-    PD: 63,
-    AC: 89,
-
-    EC: 53,
-    CC: 56,
-    MC: 58,
-    ST: 59,
-    DC: 57,
-    SF: 93,
-
-    TS: 73,
-    FC: 74,
-    LK: 75,
-
-    CN: 65,
-    MT: 66,
-    CF: 67,
-
-    RC: 71,
-    SO: 70,
-    CT: 69,
-    CS: 92,
-
-    FS: 81,
-    MB: 83,
-    TT: 80,
-    WM: 82,
-    SU: 91,
-
-    KC: 85,
-    KT: 86,
-    OF: 87,
-  }
-  const selectedCategory = document.querySelector("ul.children>li:has(>label>input[checked='checked']):not(:has(ul))");
-  if (selectedCategory) {
-    let catId = selectedCategory.id.split("-")[2];
-    const skuInput = document.getElementById("_sku");
-
-    if (skuInput) {
-      const extAPI = typeof browser !== "undefined" ? browser : chrome;
-      let skuKey = "";
-      for (let [key, value] of Object.entries(skuIds)) {
-        if (value == catId) {
-          skuKey = key;
-          break;
-        }
-      }
-
-      extAPI.storage.local.get("sharkTradingSkuData", (result) => {
-        let newData = { ...result.sharkTradingSkuData, continueIteration: true };
-        let skuNumber = "" + newData[skuKey];
-        while (skuNumber.length < 4) {
-          skuNumber = "0" + skuNumber;
-        }
-        skuInput.value = `${skuKey}-${skuNumber}`;
-        newData[skuKey]++;
-        extAPI.storage.local.set({ sharkTradingSkuData: newData });
-      });
-      return true;
+  return new Promise((resolve) => {
+    const skuIds = {
+      OD: 61,
+      BD: 60,
+      SS: 62,
+      FT: 90,
+      PD: 63,
+      AC: 89,
+  
+      EC: 53,
+      CC: 56,
+      MC: 58,
+      ST: 59,
+      DC: 57,
+      SF: 93,
+  
+      TS: 73,
+      FC: 74,
+      LK: 75,
+  
+      CN: 65,
+      MT: 66,
+      CF: 67,
+  
+      RC: 71,
+      SO: 70,
+      CT: 69,
+      CS: 92,
+  
+      FS: 81,
+      MB: 83,
+      TT: 80,
+      WM: 82,
+      SU: 91,
+  
+      KC: 85,
+      KT: 86,
+      OF: 87,
     }
-  }
+    const selectedCategory = document.querySelector("ul.children>li:has(>label>input[checked='checked']):not(:has(ul))");
+    if (selectedCategory) {
+      let catId = selectedCategory.id.split("-")[2];
+      const skuInput = document.getElementById("_sku");
+  
+      if (skuInput) {
+        const extAPI = typeof browser !== "undefined" ? browser : chrome;
+        let skuKey = "";
+        for (let [key, value] of Object.entries(skuIds)) {
+          if (value == catId) {
+            skuKey = key;
+            break;
+          }
+        }
+  
+        extAPI.storage.local.get("sharkTradingData", (result) => {
+          let newData = { ...result.sharkTradingData, continueIteration: true };
+          console.log(newData);
+          let skuNumber = "" + newData[skuKey];
+          while (skuNumber.length < 4) {
+            skuNumber = "0" + skuNumber;
+          }
+          skuInput.value = `${skuKey}-${skuNumber}`;
+          newData[skuKey]++;
+          extAPI.storage.local.set({ sharkTradingData: newData }, () => {
+            resolve(true);
+            document.getElementById("publish").click();
+          });
+        });
+      }
+    }
+  })
 }
 
 
