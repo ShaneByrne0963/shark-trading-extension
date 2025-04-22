@@ -13,7 +13,7 @@ function editProduct(action, data) {
 
 // Finds the current price of the product
 function getPrice() {
-    let priceEl = document.querySelector(".price bdi");
+    let priceEl = document.querySelector(".summary .price bdi");
     if (priceEl) {
         return parseFloat(priceEl.innerText.replace("€", ""));
     }
@@ -34,7 +34,9 @@ function openForm(formType) {
     // Hide the price when editing it
     if (formType === "price") {
         let priceEl = document.querySelector(".woocommerce-Price-amount.amount");
-        priceEl.style.display = "none";
+        if (priceEl) {
+            priceEl.style.display = "none";
+        }
     }
 }
 
@@ -70,8 +72,10 @@ function cancelPriceEdit() {
         let form = document.getElementById(`br-ext-${f}-form`);
         let feedback = document.getElementById(`br-ext-${f}-feedback`);
 
-        form.style.display = "none";
-        feedback.style.display = "none";
+        if (form) {
+            form.style.display = "none";
+            feedback.style.display = "none";
+        }
     }
     let buttonDiv = document.getElementById("br-ext-price-buttons");
     buttonDiv.style.display = "flex";
@@ -82,11 +86,12 @@ function cancelPriceEdit() {
 
 function editPriceButtonInit() {
     const buttonDiv = document.getElementById("br-ext-price-buttons");
+    let price = getPrice() || "";
 
     let priceButton = document.createElement("button");
     priceButton.id = `br-ext-edit-price`;
     priceButton.className = `br-ext`;
-    priceButton.innerText = "Edit Price";
+    priceButton.innerText = price ? "Edit Price" : "Set Price";
     priceButton.onclick = () => openForm("price");
 
     buttonDiv.appendChild(priceButton);
@@ -95,7 +100,7 @@ function editPriceButtonInit() {
     let { form, input, submit, cancel, feedback } = createInlineForm("price");
     input.type = "number";
     input.min = "1";
-    input.value = getPrice() || "";
+    input.value = price;
     input.oninput = () => validate(
         {form, input, submit, feedback },
         { min: 1, required: false }
@@ -104,26 +109,22 @@ function editPriceButtonInit() {
     submit.onclick = () => editProduct("updatePrice", { price: parseFloat(document.getElementById("br-ext-price-input").value) });
     cancel.onclick = cancelPriceEdit;
 
-    const priceEl = document.querySelector(".price");
-    priceEl.appendChild(form);
-    priceEl.appendChild(feedback);
+    const priceEl = document.querySelector(".summary .price");
+    if (priceEl) {
+        priceEl.appendChild(form);
+        priceEl.appendChild(feedback);
+    }
 }
 
 
 // Creates a sale button under the price display
 function saleButtonInit() {
-    const priceEl = document.querySelector("p.price");
-    priceEl.style.marginBottom = "0";
-    const isSale = priceEl.querySelectorAll(".woocommerce-Price-amount").length > 1;
-
-    let buttonDiv = document.createElement("div");
-    buttonDiv.id = "br-ext-price-buttons";
-    priceEl.after(buttonDiv);
-
+    const buttonDiv = document.getElementById("br-ext-price-buttons");
     let priceButton = document.createElement("button");
     priceButton.id = `br-ext-start-sale`;
     priceButton.className = `br-ext`;
 
+    const isSale = document.querySelectorAll(".summary .woocommerce-Price-amount").length > 1;
     if (isSale) {
         priceButton.innerText = "End Sale";
         priceButton.onclick = () => editProduct("removeSale", {});
@@ -146,8 +147,8 @@ function saleButtonInit() {
         submit.onclick = () => editProduct("setSale", { price: parseFloat(document.getElementById("br-ext-sale-input").value) });
         cancel.onclick = cancelPriceEdit;
         
-        priceEl.after(feedback);
-        priceEl.after(form);
+        buttonDiv.after(feedback);
+        buttonDiv.after(form);
     }
     buttonDiv.appendChild(priceButton);
 
@@ -227,6 +228,14 @@ function optionsInit() {
 
 
 if (window.location.href.includes("/product/")) {
+    // Add the sale button div below the price
+    const priceEl = document.querySelector(".summary .price");
+    priceEl.style.marginBottom = "0";
+
+    let buttonDiv = document.createElement("div");
+    buttonDiv.id = "br-ext-price-buttons";
+    priceEl.after(buttonDiv);
+
     // You can only start a sale if an original price exists
     if (getPrice() !== null) {
         saleButtonInit();
