@@ -83,6 +83,11 @@
     }
 }
 
+#br-ext-copied-sku {
+    color: var(--tm-skincolor-text);
+    transition: opacity 1s ease-in-out;
+}
+
 button.br-ext {
     background-color: var(--admin-color-primary);
     color: black;
@@ -110,4 +115,8 @@ button.br-ext {
 
 .br-ext.invalid {
     border-color: var(--admin-color-error) !important;
+}
+
+.sku {
+    cursor: pointer;
 }

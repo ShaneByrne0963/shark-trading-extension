@@ -227,7 +227,33 @@ function optionsInit() {
 }
 
 
+// Copies the SKU to the clipboard
+function copySku() {
+    let sku = document.querySelector(".sku_wrapper>.sku");
+    navigator.clipboard.writeText(sku.innerText.trim());
+
+    if (!document.getElementById("br-ext-copied-sku")) {
+        let note = document.createElement("small");
+        note.id = "br-ext-copied-sku";
+        note.innerText = "Copied to clipboard!";
+
+        // Start a fade out after 3 seconds
+        setTimeout(() => note.style.opacity = "0", 3000);
+
+        // Remove the notification after it has faded out
+        note.addEventListener("transitionend", () => note.remove());
+        sku.after(note);
+    }
+}
+
+
 if (window.location.href.includes("/product/")) {
+    // Add the ability to copy the SKU on click
+    const sku = document.querySelector(".sku");
+    if (sku) {
+        sku.addEventListener("click", copySku);
+    }
+
     // Add the sale button div below the price
     const priceEl = document.querySelector(".summary .price");
     priceEl.style.marginBottom = "0";
