@@ -117,6 +117,6 @@ button.br-ext {
     border-color: var(--admin-color-error) !important;
 }
 
-.sku {
+.sku, .summary>.product_title {
     cursor: pointer;
 }

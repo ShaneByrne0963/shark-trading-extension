@@ -1,4 +1,11 @@
 const actions = {
+  editName: (data) => {
+    const nameInput = document.getElementById("title");
+    if (!nameInput) return false;
+
+    nameInput.value = data.name;
+    return true;
+  },
   setSale: (data) => {
     // Find the sale price and title inputs
     const saleInput = document.getElementById("_sale_price");

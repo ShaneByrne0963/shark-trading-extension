@@ -24,18 +24,29 @@ function getPrice() {
 // Hides the price options, and shows a specific form
 function openForm(formType) {
     let buttonDiv = document.getElementById("br-ext-price-buttons");
-    let form = document.getElementById(`br-ext-${formType}-form`);
-    let feedback = document.getElementById(`br-ext-${formType}-feedback`);
 
-    buttonDiv.style.display = "none";
-    form.style.display = "flex";
-    feedback.style.display = "block";
-
-    // Hide the price when editing it
-    if (formType === "price") {
-        let priceEl = document.querySelector(".woocommerce-Price-amount.amount");
-        if (priceEl) {
-            priceEl.style.display = "none";
+    // Only open the form if no other form is selected
+    if (buttonDiv.style.display !== "none") {
+        let form = document.getElementById(`br-ext-${formType}-form`);
+        let feedback = document.getElementById(`br-ext-${formType}-feedback`);
+    
+        buttonDiv.style.display = "none";
+        form.style.display = "flex";
+        feedback.style.display = "block";
+    
+        // Hide the title when editing it
+        if (formType === "name") {
+            let nameEl = document.querySelector(".summary>.product_title");
+            if (nameEl) {
+                nameEl.style.display = "none";
+            }
+        }
+        // Hide the price when editing it
+        else if (formType === "price") {
+            let priceEl = document.querySelector(".woocommerce-Price-amount.amount");
+            if (priceEl) {
+                priceEl.style.display = "none";
+            }
         }
     }
 }
@@ -67,7 +78,7 @@ function validate(form, options={}) {
 // Returns the "Start Sale" button and hides the form
 function cancelPriceEdit() {
     // Hide all price forms
-    const forms = ["sale", "price"];
+    const forms = ["name", "sale", "price"];
     for (let f of forms) {
         let form = document.getElementById(`br-ext-${f}-form`);
         let feedback = document.getElementById(`br-ext-${f}-feedback`);
@@ -80,7 +91,13 @@ function cancelPriceEdit() {
     let buttonDiv = document.getElementById("br-ext-price-buttons");
     buttonDiv.style.display = "flex";
     let priceEl = document.querySelector(".woocommerce-Price-amount.amount");
-    priceEl.style.display = "inline";
+    if (priceEl) {
+        priceEl.style.display = "inline";
+    }
+    let nameEl = document.querySelector(".summary>.product_title");
+    if (nameEl) {
+        nameEl.style.display = "inline";
+    }
 }
 
 
@@ -102,7 +119,7 @@ function editPriceButtonInit() {
     input.min = "1";
     input.value = price;
     input.oninput = () => validate(
-        {form, input, submit, feedback },
+        { form, input, submit, feedback },
         { min: 1, required: false }
     );
     
@@ -156,6 +173,27 @@ function saleButtonInit() {
     if (!isSale) {
         editPriceButtonInit();
     }
+}
+
+
+function editNameInit() {
+    let title = document.querySelector(".summary>.product_title");
+    let { form, input, submit, cancel, feedback } = createInlineForm("name");
+
+    input.type = "text";
+    input.value = title.innerText;
+
+    input.oninput = () => validate(
+        { form, input, submit, feedback },
+        {  }
+    );
+    submit.onclick = () => editProduct("editName", { name: document.getElementById("br-ext-name-input").value })
+
+    cancel.onclick = cancelPriceEdit;
+    title.after(feedback);
+    title.after(form);
+    
+    title.onclick = () => openForm("name");
 }
 
 
@@ -270,4 +308,5 @@ if (window.location.href.includes("/product/")) {
         editPriceButtonInit();
     }
     optionsInit();
+    editNameInit();
 }
