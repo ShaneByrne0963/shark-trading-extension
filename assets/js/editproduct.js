@@ -3,7 +3,11 @@ const actions = {
     const nameInput = document.getElementById("title");
     if (!nameInput) return false;
 
-    nameInput.value = data.name;
+    // Get if there is a sale
+    const saleInput = document.getElementById("_sale_price");
+    if (!saleInput) return false;
+
+    nameInput.value = saleInput.value !== "" ? `*SPECIAL OFFER* ${data.name}` : data.name;
     return true;
   },
   setSale: (data) => {

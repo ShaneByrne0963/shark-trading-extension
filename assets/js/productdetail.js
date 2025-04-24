@@ -181,7 +181,8 @@ function editNameInit() {
     let { form, input, submit, cancel, feedback } = createInlineForm("name");
 
     input.type = "text";
-    input.value = title.innerText;
+    input.value = title.innerText.replace("*SPECIAL OFFER* ", "");
+    input.maxLength = "60";
 
     input.oninput = () => validate(
         { form, input, submit, feedback },
